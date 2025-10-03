@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Newspaper Agent</title>
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-newspaper me-2"></i>
+                AI Newspaper Agent
+            </a>
+            <span class="navbar-text">
+                Automated Journalism Through LLM Orchestration
+            </span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <h1 class="display-4 fw-bold text-primary mb-3">
+                            <i class="bi bi-robot me-3"></i>
+                            AI Newspaper Agent
+                        </h1>
+                        <p class="lead text-muted mb-4">
+                            Experience the future of journalism with our three-stage LLM pipeline
+                        </p>
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <div class="d-flex justify-content-center gap-3 mb-3">
+                                    <span class="badge bg-info fs-6 px-3 py-2">
+                                        <i class="bi bi-search me-1"></i>DeepSeek Research
+                                    </span>
+                                    <span class="badge bg-success fs-6 px-3 py-2">
+                                        <i class="bi bi-pencil me-1"></i>OpenAI Draft
+                                    </span>
+                                    <span class="badge bg-warning fs-6 px-3 py-2">
+                                        <i class="bi bi-check-circle me-1"></i>Gemini Edit
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-input-cursor me-2"></i>
+                            Article Topic Input
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="articleForm">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label for="topicInput" class="form-label fw-semibold">
+                                            What would you like to write about?
+                                        </label>
+                                        <input type="text" class="form-control form-control-lg" id="topicInput" 
+                                               placeholder="e.g., Artificial Intelligence in Healthcare, Climate Change Solutions, Space Exploration..."
+                                               required>
+                                        <div class="form-text">
+                                            Enter a specific topic or subject for your newspaper article
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="maxLength" class="form-label fw-semibold">
+                                            Article Length
+                                        </label>
+                                        <select class="form-select form-select-lg" id="maxLength">
+                                            <option value="800">Short (800 words)</option>
+                                            <option value="1200" selected>Medium (1200 words)</option>
+                                            <option value="1500">Long (1500 words)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg" id="generateBtn">
+                                    <i class="bi bi-magic me-2"></i>
+                                    Generate Article
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Section -->
+        <div class="row mb-4" id="loadingSection" style="display: none;">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5 class="text-primary mb-2">Generating Your Article</h5>
+                        <p class="text-muted mb-0">Our AI agents are working through the three-stage pipeline...</p>
+                        <div class="progress mt-3" style="height: 8px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" style="width: 0%" id="progressBar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="row" id="resultsSection" style="display: none;">
+            <!-- Research Stage -->
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-search me-2"></i>
+                            Stage 1: Research
+                        </h5>
+                        <small id="researchLLM" class="opacity-75"></small>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="badge" id="researchStatus"></span>
+                        </div>
+                        <div class="research-content" id="researchContent">
+                            <!-- Research content will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft Stage -->
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-pencil me-2"></i>
+                            Stage 2: Draft
+                        </h5>
+                        <small id="draftLLM" class="opacity-75"></small>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="badge" id="draftStatus"></span>
+                        </div>
+                        <div class="draft-content" id="draftContent">
+                            <!-- Draft content will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Stage -->
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-check-circle me-2"></i>
+                            Stage 3: Final Edit
+                        </h5>
+                        <small id="finalLLM" class="opacity-75"></small>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="badge" id="finalStatus"></span>
+                        </div>
+                        <div class="final-content" id="finalContent">
+                            <!-- Final content will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Time -->
+        <div class="row" id="processingTimeSection" style="display: none;">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted mb-0">
+                            <i class="bi bi-clock me-2"></i>
+                            Total Processing Time: <span id="processingTime" class="fw-bold text-primary"></span>
+                        </h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="fw-bold">AI Newspaper Agent</h6>
+                    <p class="text-muted small mb-0">
+                        Demonstrating sequential LLM orchestration for automated journalism
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted small mb-0">
+                        Powered by DeepSeek • OpenAI • Google Gemini
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
