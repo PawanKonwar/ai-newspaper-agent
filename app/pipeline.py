@@ -2,6 +2,13 @@
 Three-stage pipeline: Research (DeepSeek) → Draft (OpenAI) → Edit (Google Gemini).
 All API keys are read from app.config (loaded from .env).
 """
+import os
+import sys
+
+# Ensure project root on sys.path before app.config import (runs even if app/__init__.py didn't)
+_root = os.path.dirname(os.path.dirname(os.path.abspath(os.path.realpath(__file__))))
+if _root not in sys.path:
+    sys.path.insert(0, _root)
 
 import logging
 import re

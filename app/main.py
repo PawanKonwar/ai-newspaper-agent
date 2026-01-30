@@ -2,6 +2,13 @@
 AI Newspaper Agent - FastAPI application.
 Serves the web UI and article-generation API. All secrets from .env via app.config.
 """
+import os
+import sys
+
+# Ensure project root on sys.path before app imports (runs even if app/__init__.py didn't)
+_root = os.path.dirname(os.path.dirname(os.path.abspath(os.path.realpath(__file__))))
+if _root not in sys.path:
+    sys.path.insert(0, _root)
 
 import logging
 import time
