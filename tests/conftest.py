@@ -8,7 +8,8 @@ import sys
 
 from dotenv import load_dotenv
 
-# Add project root to sys.path so "app" package is findable (app.config, app.main, app.pipeline)
+# Add project root to sys.path so "app" package is findable
+# (app.config, app.main, app.pipeline)
 _conftest_dir = os.path.abspath(os.path.dirname(__file__))
 _project_root = os.path.abspath(os.path.join(_conftest_dir, os.pardir))
 if _project_root not in sys.path:
