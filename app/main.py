@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
-from .config import (
+from app.config import (
     APP_HOST,
     APP_PORT,
     DEBUG,
@@ -21,7 +21,7 @@ from .config import (
     STATIC_DIR,
     TEMPLATES_DIR,
 )
-from .pipeline import NewspaperPipeline
+from app.pipeline import NewspaperPipeline
 
 logging.basicConfig(
     level=logging.INFO,

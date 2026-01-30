@@ -44,6 +44,6 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          # Editable install puts app on path; PYTHONPATH fallback for module-level imports
+          # Guarantee project root on path before Python starts (app must be importable as package)
           PYTHONPATH: ${{ github.workspace }}
-        run: python -m pytest tests/ -v --tb=short
+        run: PYTHONPATH=${{ github.workspace }} python -m pytest tests/ -v --tb=short
