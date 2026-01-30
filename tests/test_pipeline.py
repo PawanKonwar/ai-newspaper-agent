@@ -9,9 +9,6 @@ def test_config_loads():
     from app.config import (
         APP_HOST,
         APP_PORT,
-        DEEPSEEK_API_KEY,
-        GOOGLE_API_KEY,
-        OPENAI_API_KEY,
         STATIC_DIR,
         TEMPLATES_DIR,
     )
@@ -25,7 +22,10 @@ def test_parse_research_facts():
     """Pipeline parses FACT | SOURCE lines."""
     from app.pipeline import NewspaperPipeline
     pipeline = NewspaperPipeline()
-    text = "FACT: Global temps rose 1.1°C. | SOURCE: IPCC\nFACT: Renewables at 30%. | SOURCE: IEA"
+    text = (
+        "FACT: Global temps rose 1.1°C. | SOURCE: IPCC\n"
+        "FACT: Renewables at 30%. | SOURCE: IEA"
+    )
     facts = pipeline._parse_research_facts(text)
     assert len(facts) >= 2
     assert facts[0]["fact"] and facts[0]["source"]

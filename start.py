@@ -20,7 +20,9 @@ def check_env() -> tuple[bool, str]:
     """Verify .env exists and required API keys are set. Returns (ok, message)."""
     env_path = _PROJECT_ROOT / ".env"
     if not env_path.exists():
-        return False, "No .env file found. Copy .env.example to .env and add your API keys."
+        return False, (
+            "No .env file found. Copy .env.example to .env and add your API keys."
+        )
     missing = [k for k in REQUIRED_KEYS if not os.getenv(k)]
     if missing:
         return False, f"Missing in .env: {', '.join(missing)}"
@@ -45,8 +47,6 @@ def main() -> None:
 
     try:
         import uvicorn
-
-        from app.main import app
     except ImportError as e:
         print(f"Missing dependency: {e}")
         print("  pip install -r requirements.txt")

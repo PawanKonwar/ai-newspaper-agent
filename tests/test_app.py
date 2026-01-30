@@ -19,7 +19,7 @@ def test_imports():
 
 
 def test_env_keys_optional():
-    """Env keys can be missing (stages will report unavailable)."""
+    """Env keys can be missing; stages will report unavailable."""
     from app.pipeline import NewspaperPipeline
     pipeline = NewspaperPipeline()
     assert hasattr(pipeline, "research_stage")
@@ -29,7 +29,7 @@ def test_env_keys_optional():
 
 
 def test_pipeline_structure():
-    """Pipeline returns expected keys; stages may be success, error, or skipped (e.g. no API keys)."""
+    """Pipeline returns expected keys; stages may be success, error, or skipped."""
     from app.pipeline import NewspaperPipeline
 
     pipeline = NewspaperPipeline()

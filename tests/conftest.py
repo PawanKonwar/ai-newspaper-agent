@@ -6,7 +6,6 @@ Ensures project root is on sys.path and loads .env so tests see config.
 import os
 import sys
 
-import pytest
 from dotenv import load_dotenv
 
 # Project root on path so "app" and config resolve

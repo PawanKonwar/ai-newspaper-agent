@@ -5,14 +5,7 @@ Serves the web UI and article-generation API. All secrets from .env via app.conf
 
 import logging
 import time
-from pathlib import Path
 from typing import Any, Dict
-
-from dotenv import load_dotenv
-
-# Load .env from project root before any app imports (so config sees API keys)
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent
-load_dotenv(_PROJECT_ROOT / ".env")
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
@@ -91,7 +84,7 @@ async def home(request: Request) -> HTMLResponse:
 
 @app.post("/generate", response_model=ArticleResponse)
 async def generate_article(request: Request) -> ArticleResponse:
-    """Run the full research → draft → edit pipeline for the given topic and word limit."""
+    """Run full research → draft → edit pipeline for the given topic and word limit."""
     body = await request.json()
     try:
         max_length_val = body.get("max_length", DEFAULT_MAX_LENGTH)
@@ -172,6 +165,7 @@ async def health_check() -> Dict[str, str]:
 def run() -> None:
     """Start the uvicorn server for the FastAPI app."""
     import uvicorn
+
     uvicorn.run(
         "app.main:app",
         host=APP_HOST,

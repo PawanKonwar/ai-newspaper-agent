@@ -23,6 +23,7 @@ from app.config import (
 
 logger = logging.getLogger(__name__)
 
+
 # Token limits: stricter for short articles (<200 words)
 def word_count_to_max_tokens(word_count: int) -> int:
     """Convert target word count to max_tokens for API calls."""
@@ -32,7 +33,7 @@ def word_count_to_max_tokens(word_count: int) -> int:
 
 
 def _truncate_to_word_count(text: str, target_words: int) -> str:
-    """If text is >20% over target, truncate at sentence boundary so output is complete thoughts."""
+    """Truncate at sentence boundary if >20% over target."""
     if not text or target_words <= 0:
         return text
     words = text.split()
@@ -136,7 +137,9 @@ class NewspaperPipeline:
             else None
         )
 
-    async def research_stage(self, topic: str, max_length: int = 1000) -> Dict[str, Any]:
+    async def research_stage(
+        self, topic: str, max_length: int = 1000
+    ) -> Dict[str, Any]:
         if not self.deepseek_llm:
             logger.error("Research: DEEPSEEK_API_KEY not configured")
             return {
@@ -147,7 +150,9 @@ class NewspaperPipeline:
             }
 
         if max_length < 150:
-            fact_instruction = "Provide at most 3 facts. Very brief. One line per fact."
+            fact_instruction = (
+                "Provide at most 3 facts. Very brief. One line per fact."
+            )
         elif max_length <= 500:
             fact_instruction = "Provide 5-7 facts. Concise."
         else:
@@ -161,10 +166,10 @@ For each finding, use this exact format on its own line:
 FACT: <the finding or statistic> | SOURCE: <source name, study, or citation>
 
 Example:
-FACT: Global temperatures have risen 1.1°C since pre-industrial levels. | SOURCE: IPCC Sixth Assessment Report
-FACT: Renewable energy accounted for 30% of global electricity in 2024. | SOURCE: IEA World Energy Outlook
+FACT: Global temperatures have risen 1.1°C since pre-industrial. | SOURCE: IPCC
+FACT: Renewable energy 30% of global electricity in 2024. | SOURCE: IEA
 
-Do not exceed the number of facts requested. Keep the response concise for a {max_length}-word article.'''
+Do not exceed facts requested. Keep concise for {max_length}-word article.'''
 
         try:
             research_data = await self.deepseek_llm.agenerate(research_prompt)
@@ -220,7 +225,9 @@ Do not exceed the number of facts requested. Keep the response concise for a {ma
         is_short = max_length < 200 and not is_blurb
         max_tokens = word_count_to_max_tokens(max_length)
         if is_blurb:
-            draft_prompt = f'''Based on this research, write a VERY BRIEF news blurb of exactly {max_length} words about "{topic}".
+            draft_prompt = (
+                f'''Based on this research, write a VERY BRIEF news blurb of '''
+                f'''exactly {max_length} words about "{topic}".
 
 Research Data:
 {research_data}
@@ -229,16 +236,18 @@ Requirements:
 - Write a VERY BRIEF news blurb of exactly {max_length} words.
 - Just 2-3 key points. No introduction or conclusion needed.
 - One short paragraph is fine. Be direct.
-- Use the format: FACT: ... | SOURCE: ... only as background; write the blurb in normal prose.
+- Use FACT: ... | SOURCE: ... only as background; write the blurb in normal prose.
 '''
+            )
         else:
             concise_instruction = (
-                "\nCRITICAL: VERY CONCISE. NO FLUFF. Every sentence must earn its place.\n"
+                "\nCRITICAL: VERY CONCISE. NO FLUFF. Every sentence must earn "
+                "its place.\n"
                 if is_short
                 else ""
             )
             draft_prompt = f'''
-Based on the following research data, write a compelling newspaper article about "{topic}".
+Based on the research below, write a compelling newspaper article about "{topic}".
 {concise_instruction}
 Research Data:
 {research_data}
@@ -252,7 +261,7 @@ Requirements:
 - Target length: approximately {max_length} words (strict limit)
 - Use proper news article formatting
 
-Please provide the complete article draft. Do not exceed {max_length} words.
+Provide the complete article draft. Do not exceed {max_length} words.
 '''
 
         try:
@@ -264,7 +273,9 @@ Please provide the complete article draft. Do not exceed {max_length} words.
             )
             response = await draft_llm.ainvoke(draft_prompt)
             draft_content = (
-                response.content if hasattr(response, "content") else str(response)
+                response.content
+                if hasattr(response, "content")
+                else str(response)
             )
             draft_content = _truncate_to_word_count(draft_content, max_length)
             final_words = _count_words(draft_content)
@@ -303,7 +314,7 @@ Please provide the complete article draft. Do not exceed {max_length} words.
         )
         max_output_tokens = word_count_to_max_tokens(max_length)
         edit_prompt = f'''
-As an experienced newspaper editor, please review and polish the following article about "{topic}":
+As an experienced editor, review and polish the following article about "{topic}":
 {concise_instruction}
 
 {draft_content}
@@ -317,12 +328,15 @@ Please:
 6. Maintain journalistic integrity
 7. Ensure the article is publication-ready
 
-Provide the final polished version of the article. Keep the length similar to the draft (do not expand beyond approximately {max_length} words).
+Provide the final polished version. Keep length ~{max_length} words max.
 '''
 
         messages = [
             SystemMessage(
-                content="You are an experienced newspaper editor with expertise in polishing journalistic content."
+                content=(
+                    "You are an experienced newspaper editor with expertise "
+                    "in polishing journalistic content."
+                )
             ),
             HumanMessage(content=edit_prompt),
         ]
@@ -337,7 +351,9 @@ Provide the final polished version of the article. Keep the length similar to th
             )
             response = await edit_llm.ainvoke(messages)
             final_content = (
-                response.content if hasattr(response, "content") else str(response)
+                response.content
+                if hasattr(response, "content")
+                else str(response)
             )
             final_content = _truncate_to_word_count(final_content, max_length)
             final_words = _count_words(final_content)
@@ -370,13 +386,18 @@ Provide the final polished version of the article. Keep the length similar to th
                         if hasattr(response, "content")
                         else str(response)
                     )
-                    final_content = _truncate_to_word_count(final_content, max_length)
+                    final_content = _truncate_to_word_count(
+                        final_content, max_length
+                    )
                     final_words = _count_words(final_content)
+                    fallback_llm_name = (
+                        f"Google Gemini ({self.gemini_edit_fallback_model})"
+                    )
                     return {
                         "status": "success",
                         "message": "Article polished successfully",
                         "final_content": final_content,
-                        "llm_used": f"Google Gemini ({self.gemini_edit_fallback_model})",
+                        "llm_used": fallback_llm_name,
                         "word_count": final_words,
                         "target_word_count": max_length,
                     }

@@ -1,7 +1,8 @@
 """
 Configuration template for AI Newspaper Agent.
-Copy this file to config.py and ensure .env is populated, or load .env and use os.getenv directly.
-Never commit config.py if it contains secrets. This template documents expected environment variables.
+Copy this file to config.py and ensure .env is populated, or load .env
+and use os.getenv directly. Never commit config.py if it contains secrets.
+This template documents expected environment variables.
 """
 
 import os
