@@ -1,237 +1,155 @@
 # AI Newspaper Agent
 
-A browser-based application that automates the journalistic process through a structured three-stage LLM pipeline. The system accepts a user-provided topic, conducts research using DeepSeek, generates an article draft using OpenAI, and produces a polished final version using Google Gemini.
+A browser-based application that automates the journalistic process through a three-stage LLM pipeline: **Research (DeepSeek)** → **Draft (OpenAI)** → **Edit (Google Gemini)**.
 
-## 🎯 Project Vision
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
-To create an interactive platform that demonstrates the capabilities of multiple LLMs working in sequence to produce high-quality journalistic content, while providing users with insight into each step of the automated writing process.
+## Features
 
-## 🏗️ System Architecture
+- **Three-stage pipeline**: Research with DeepSeek, draft with OpenAI GPT-4, polish with Google Gemini
+- **Web UI**: Topic input, target word count, collapsible stage results, regenerate per stage
+- **Export**: Download article as `.txt` with metadata (headline, date, word count, LLMs used)
+- **Edit before download**: In-browser text editor for the final article
+- **Research transparency**: Facts displayed with source attributions when the model follows the requested format
 
-### Three-Stage Pipeline
-
-1. **Research Stage (DeepSeek)**: Comprehensive topic research and fact-gathering
-2. **Draft Stage (OpenAI)**: Initial article creation based on research
-3. **Edit Stage (Google Gemini)**: Final polishing and publication-ready formatting
-
-### Technical Stack
-
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+), Bootstrap 5.3
-- **Backend**: Python 3.10+, FastAPI, Uvicorn ASGI server
-- **LLM Orchestration**: LangChain
-- **LLM Providers**: OpenAI GPT-4, DeepSeek Chat, Google Gemini Pro
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Python 3.10 or higher
-- API keys for OpenAI, DeepSeek, and Google Gemini
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd ai_newspaper_agent
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Configure environment variables**
-   ```bash
-   cp env_example.txt .env
-   ```
-   
-   Edit `.env` and add your API keys:
-   ```
-   OPENAI_API_KEY=your_openai_api_key_here
-   DEEPSEEK_API_KEY=your_deepseek_api_key_here
-   GOOGLE_API_KEY=your_google_gemini_api_key_here
-   ```
-
-4. **Run the application**
-   ```bash
-   python main.py
-   ```
-
-5. **Access the application**
-   Open your browser and navigate to `http://localhost:8000`
-
-## 🔧 Configuration
-
-### Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `OPENAI_API_KEY` | OpenAI API key for GPT-4/GPT-3.5 | Yes |
-| `DEEPSEEK_API_KEY` | DeepSeek API key for research | Yes |
-| `GOOGLE_API_KEY` | Google Gemini API key for editing | Yes |
-| `HOST` | Server host (default: 0.0.0.0) | No |
-| `PORT` | Server port (default: 8000) | No |
-| `DEBUG` | Debug mode (default: False) | No |
-
-### API Key Setup
-
-1. **OpenAI**: Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys)
-2. **DeepSeek**: Get your API key from [DeepSeek Platform](https://platform.deepseek.com/)
-3. **Google Gemini**: Get your API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
-
-## 📖 Usage
-
-1. **Enter a Topic**: Input any topic you'd like to write about
-2. **Select Length**: Choose from Short (800 words), Medium (1200 words), or Long (1500 words)
-3. **Generate Article**: Click "Generate Article" to start the three-stage pipeline
-4. **View Results**: Watch as each stage completes and displays its output
-
-### Example Topics
-
-- "Artificial Intelligence in Healthcare"
-- "Climate Change Solutions"
-- "Space Exploration Advances"
-- "Renewable Energy Trends"
-- "Cybersecurity in 2024"
-
-## 🎨 Features
-
-### Modern Web Interface
-- Responsive Bootstrap 5.3 design
-- Real-time progress tracking
-- Interactive stage-by-stage results display
-- Mobile-friendly layout
-
-### LLM Orchestration
-- Sequential pipeline execution
-- Error handling and fallback mechanisms
-- Processing time tracking
-- Full transparency in each stage
-
-### Educational Value
-- View intermediate processing steps
-- Understand each LLM's role
-- Learn about automated journalism workflows
-
-## 🔍 API Endpoints
-
-### `GET /`
-Serves the main application interface.
-
-### `POST /generate-article`
-Generates a newspaper article using the three-stage pipeline.
-
-**Request Body:**
-```json
-{
-  "topic": "string",
-  "max_length": 1200
-}
-```
-
-**Response:**
-```json
-{
-  "topic": "string",
-  "research_stage": {
-    "status": "success|error|skipped",
-    "message": "string",
-    "research_data": "string",
-    "llm_used": "string"
-  },
-  "draft_stage": {
-    "status": "success|error|skipped",
-    "message": "string",
-    "draft_content": "string",
-    "llm_used": "string"
-  },
-  "final_stage": {
-    "status": "success|error|skipped",
-    "message": "string",
-    "final_content": "string",
-    "llm_used": "string"
-  },
-  "processing_time": 45.67
-}
-```
-
-### `GET /health`
-Health check endpoint.
-
-## 🛠️ Development
-
-### Project Structure
+## Project structure
 
 ```
 ai_newspaper_agent/
-├── main.py                 # FastAPI application entry point
-├── newspaper_pipeline.py   # Core LLM orchestration logic
-├── requirements.txt        # Python dependencies
-├── env_example.txt        # Environment variables template
-├── templates/
-│   └── index.html         # Main HTML template
-├── static/
-│   ├── css/
-│   │   └── style.css      # Custom styles
-│   └── js/
-│       └── app.js         # Frontend JavaScript
-└── README.md              # This file
+├── app/                    # Backend application
+│   ├── __init__.py
+│   ├── config.py           # Loads from .env (no secrets in code)
+│   ├── main.py             # FastAPI app and API routes
+│   └── pipeline.py         # Three-stage LLM pipeline
+├── frontend/
+│   ├── static/             # CSS, JS
+│   └── templates/          # HTML
+├── tests/
+│   ├── test_app.py
+│   └── test_pipeline.py
+├── .env.example            # Template for environment variables
+├── config_template.py     # Documents expected config (no secrets)
+├── requirements.txt       # Pinned dependencies
+├── run.py                 # Entry: python run.py
+├── start.py               # Entry with env check: python start.py
+├── README.md
+└── LICENSE                # MIT
 ```
 
-### Adding New LLM Providers
+## Prerequisites
 
-1. Create a new LLM wrapper class in `newspaper_pipeline.py`
-2. Add the new stage to the pipeline
-3. Update the frontend to display the new stage
-4. Add environment variable configuration
+- **Python 3.10+**
+- **API keys** (all required for full pipeline):
+  - [OpenAI](https://platform.openai.com/api-keys)
+  - [DeepSeek](https://platform.deepseek.com/)
+  - [Google Gemini](https://aistudio.google.com/apikey)
 
-### Customizing the Pipeline
+## Setup
 
-The pipeline can be easily extended by:
-- Adding new stages
-- Modifying existing prompts
-- Changing LLM models
-- Adding preprocessing/postprocessing steps
+### 1. Clone and enter the project
 
-## 🐛 Troubleshooting
+```bash
+git clone <repository-url>
+cd ai_newspaper_agent
+```
 
-### Common Issues
+### 2. Create a virtual environment (recommended)
 
-1. **API Key Errors**: Ensure all API keys are correctly set in the `.env` file
-2. **Import Errors**: Make sure all dependencies are installed with `pip install -r requirements.txt`
-3. **Port Conflicts**: Change the port in the `.env` file if 8000 is already in use
-4. **Rate Limiting**: Some APIs have rate limits; consider adding delays between requests
+```bash
+python3 -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+```
 
-### Debug Mode
+### 3. Install dependencies
 
-Enable debug mode by setting `DEBUG=True` in your `.env` file for detailed error logging.
+```bash
+pip install -r requirements.txt
+```
 
-## 📄 License
+### 4. Configure environment variables
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+**Never commit real API keys.** Use a `.env` file (ignored by git).
 
-## 🤝 Contributing
+```bash
+cp .env.example .env
+```
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+Edit `.env` and set your keys:
 
-## 📞 Support
+```env
+OPENAI_API_KEY=sk-...
+DEEPSEEK_API_KEY=...
+GOOGLE_API_KEY=...
+```
 
-For issues and questions:
-1. Check the troubleshooting section
-2. Review the API documentation
-3. Open an issue on GitHub
+Optional server settings:
 
-## 🔮 Future Enhancements
+```env
+APP_HOST=0.0.0.0
+APP_PORT=8000
+DEBUG=False
+```
 
-- [ ] Support for additional LLM providers
-- [ ] Article templates and styles
-- [ ] Export functionality (PDF, Word)
-- [ ] User authentication and article history
-- [ ] Real-time collaboration features
-- [ ] Advanced prompt customization
-- [ ] Multi-language support
+See `config_template.py` for the full list of supported variables.
+
+### 5. Run the application
+
+**Option A – with env check (recommended)**
+
+```bash
+python start.py
+```
+
+**Option B – direct**
+
+```bash
+python run.py
+```
+
+**Option C – uvicorn**
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Then open **http://localhost:8000** in your browser.
+
+## Running tests
+
+From the project root:
+
+```bash
+pip install pytest pytest-asyncio
+python -m pytest tests/ -v
+```
+
+## Environment variables reference
+
+| Variable           | Required | Description                          |
+|--------------------|----------|--------------------------------------|
+| `OPENAI_API_KEY`   | Yes      | OpenAI API key (draft stage)         |
+| `DEEPSEEK_API_KEY` | Yes      | DeepSeek API key (research stage)    |
+| `GOOGLE_API_KEY`   | Yes      | Google Gemini API key (edit stage)   |
+| `APP_HOST`         | No       | Bind address (default: 0.0.0.0)      |
+| `APP_PORT`         | No       | Port (default: 8000)                 |
+| `DEBUG`            | No       | Enable reload (default: False)       |
+
+## API endpoints
+
+- `GET /` – Web UI
+- `GET /health` – Health check
+- `POST /generate` – Run full pipeline (topic, max_length)
+- `POST /regenerate-research` – Regenerate research only
+- `POST /regenerate-draft` – Regenerate draft from existing research
+- `POST /regenerate-edit` – Regenerate edit from existing draft
+
+## Security
+
+- **No API keys in code.** All secrets are read from the `.env` file.
+- `.env` is listed in `.gitignore`; never commit it.
+- Use `.env.example` and `config_template.py` as templates only; they contain no real keys.
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.

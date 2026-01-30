@@ -15,7 +15,7 @@ pip install -r requirements.txt
 ### 2. Configure API Keys
 ```bash
 # Copy the example environment file
-cp env_example.txt .env
+cp .env.example .env
 
 # Edit .env and add your API keys
 nano .env  # or use your preferred editor
@@ -58,12 +58,12 @@ python3 start.py
 
 #### Option B: Direct execution
 ```bash
-python3 main.py
+python run.py
 ```
 
 #### Option C: Using uvicorn directly
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ### 5. Access the Application
@@ -71,13 +71,13 @@ Open your browser and navigate to: **http://localhost:8000**
 
 ## 🧪 Testing the Setup
 
-Run the test script to verify everything is working:
+Run the test suite to verify everything is working:
 ```bash
-python3 test_app.py
+python -m pytest tests/ -v
 ```
 
 This will:
-- ✅ Check all imports
+- ✅ Check imports and app structure
 - ✅ Verify API key configuration
 - ✅ Test the complete pipeline (if API keys are configured)
 
@@ -95,34 +95,30 @@ This will:
 
 ```
 ai_newspaper_agent/
-├── main.py                 # FastAPI application
-├── newspaper_pipeline.py   # LLM orchestration logic
-├── start.py               # Convenient startup script
-├── test_app.py            # Test and validation script
-├── requirements.txt       # Python dependencies
-├── env_example.txt       # Environment variables template
-├── README.md             # Complete documentation
-├── SETUP_INSTRUCTIONS.md # This file
-├── templates/
-│   └── index.html        # Main web interface
-└── static/
-    ├── css/
-    │   └── style.css     # Custom styling
-    └── js/
-        └── app.js        # Frontend JavaScript
+├── app/                   # Backend (main, config, pipeline)
+├── frontend/
+│   ├── static/            # CSS, JS
+│   └── templates/         # HTML
+├── tests/                 # Test suite
+├── start.py               # Startup script (checks .env)
+├── run.py                 # Direct run entry point
+├── requirements.txt       # Pinned dependencies
+├── .env.example           # Environment template (copy to .env)
+├── README.md              # Complete documentation
+└── SETUP_INSTRUCTIONS.md  # This file
 ```
 
 ## 🔧 Configuration Options
 
 ### Environment Variables
-- `HOST`: Server host (default: 0.0.0.0)
-- `PORT`: Server port (default: 8000)
+- `APP_HOST`: Server host (default: 0.0.0.0)
+- `APP_PORT`: Server port (default: 8000)
 - `DEBUG`: Debug mode (default: False)
 
 ### Customization
-- Modify prompts in `newspaper_pipeline.py`
-- Adjust styling in `static/css/style.css`
-- Enhance UI in `templates/index.html`
+- Modify prompts in `app/pipeline.py`
+- Adjust styling in `frontend/static/css/style.css`
+- Enhance UI in `frontend/templates/index.html`
 
 ## 🐛 Troubleshooting
 
@@ -148,7 +144,7 @@ ai_newspaper_agent/
 ### Getting Help
 
 1. Check the main `README.md` for detailed documentation
-2. Run `python3 test_app.py` to diagnose issues
+2. Run `python -m pytest tests/ -v` to diagnose issues
 3. Check the console output for error messages
 
 ## 🎉 You're All Set!

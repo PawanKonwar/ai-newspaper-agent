@@ -225,3 +225,52 @@ footer {
     border: 2px solid;
     border-image: linear-gradient(45deg, var(--primary-color), var(--info-color)) 1;
 }
+
+/* Disclaimer below topic */
+.alert-info.mt-2.py-2.px-3.small {
+    font-size: 0.875rem;
+}
+
+/* Collapsible stage headers */
+.stage-header {
+    cursor: pointer;
+    user-select: none;
+}
+.stage-header .collapse-icon {
+    transition: transform 0.2s ease;
+}
+
+/* Regenerate buttons */
+.btn-regenerate {
+    white-space: nowrap;
+}
+.btn-regenerate:disabled {
+    opacity: 0.8;
+}
+
+/* Research facts with sources */
+.research-facts {
+    max-height: 400px;
+    overflow-y: auto;
+}
+.research-fact-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.research-fact-item:last-child {
+    border-bottom: none;
+}
+.fact-text {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+.fact-source {
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+/* Edit article area */
+#editArticleTextarea {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}

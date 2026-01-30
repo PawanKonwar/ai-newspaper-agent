@@ -1,95 +1,71 @@
 #!/usr/bin/env python3
 """
-AI Newspaper Agent - Startup Script
-Convenient script to start the application with proper configuration
+Startup script for AI Newspaper Agent.
+Checks .env and dependencies, then runs the app. Use: python start.py
 """
 
 import os
 import sys
-import subprocess
 from pathlib import Path
 
-def check_requirements():
-    """Check if all requirements are installed."""
-    try:
-        import fastapi
-        import uvicorn
-        import langchain
-        from langchain_google_genai import ChatGoogleGenerativeAI
-        return True
-    except ImportError:
-        return False
+from dotenv import load_dotenv
 
-def check_env_file():
-    """Check if .env file exists and has required keys."""
-    env_file = Path(".env")
-    if not env_file.exists():
-        return False, "No .env file found"
-    
-    # Load and check environment variables
-    from dotenv import load_dotenv
-    load_dotenv()
-    
-    required_keys = ['OPENAI_API_KEY', 'DEEPSEEK_API_KEY', 'GOOGLE_API_KEY']
-    missing_keys = [key for key in required_keys if not os.getenv(key)]
-    
-    if missing_keys:
-        return False, f"Missing API keys: {', '.join(missing_keys)}"
-    
-    return True, "All API keys configured"
+_PROJECT_ROOT = Path(__file__).resolve().parent
+load_dotenv(_PROJECT_ROOT / ".env")
 
-def main():
-    """Main startup function."""
-    print("🚀 AI Newspaper Agent - Starting Application")
+REQUIRED_KEYS = ("OPENAI_API_KEY", "DEEPSEEK_API_KEY", "GOOGLE_API_KEY")
+
+
+def check_env() -> tuple[bool, str]:
+    """Verify .env exists and required API keys are set. Returns (ok, message)."""
+    env_path = _PROJECT_ROOT / ".env"
+    if not env_path.exists():
+        return False, "No .env file found. Copy .env.example to .env and add your API keys."
+    missing = [k for k in REQUIRED_KEYS if not os.getenv(k)]
+    if missing:
+        return False, f"Missing in .env: {', '.join(missing)}"
+    return True, "Environment configured"
+
+
+def main() -> None:
+    """Check environment, then start the uvicorn server."""
+    root = Path(__file__).resolve().parent
+    sys.path.insert(0, str(root))
+
+    print("AI Newspaper Agent")
     print("=" * 50)
-    
-    # Check requirements
-    print("🔍 Checking requirements...")
-    if not check_requirements():
-        print("❌ Missing dependencies. Installing...")
-        try:
-            subprocess.run([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"], check=True)
-            print("✅ Dependencies installed successfully")
-        except subprocess.CalledProcessError:
-            print("❌ Failed to install dependencies. Please run manually:")
-            print("pip install -r requirements.txt")
-            return
-    else:
-        print("✅ All dependencies are installed")
-    
-    # Check environment configuration
-    print("\n🔍 Checking environment configuration...")
-    env_ok, env_message = check_env_file()
-    if not env_ok:
-        print(f"❌ {env_message}")
-        print("\n📝 Please create a .env file with your API keys:")
-        print("1. Copy env_example.txt to .env")
-        print("2. Add your API keys to the .env file")
-        print("3. Run this script again")
-        return
-    else:
-        print(f"✅ {env_message}")
-    
-    # Start the application
-    print("\n🚀 Starting the application...")
-    print("📱 Open your browser and navigate to: http://localhost:8000")
-    print("⏹️  Press Ctrl+C to stop the server")
-    print("=" * 50)
-    
+
+    ok, msg = check_env()
+    if not ok:
+        print(f"Error: {msg}")
+        print("  cp .env.example .env")
+        print("  Then edit .env with your API keys.")
+        sys.exit(1)
+    print(f"  {msg}")
+
     try:
-        # Import and run the main application
         import uvicorn
+        from app.main import app
+    except ImportError as e:
+        print(f"Missing dependency: {e}")
+        print("  pip install -r requirements.txt")
+        sys.exit(1)
+
+    print("  Starting server at http://localhost:8000")
+    print("  Press Ctrl+C to stop")
+    print("=" * 50)
+
+    try:
         uvicorn.run(
-            "main:app",
-            host="0.0.0.0",
-            port=8000,
-            reload=True,
-            log_level="info"
+            "app.main:app",
+            host=os.getenv("APP_HOST", "0.0.0.0"),
+            port=int(os.getenv("APP_PORT", "8000")),
+            reload=os.getenv("DEBUG", "false").lower() in ("true", "1", "yes"),
+            log_level="info",
         )
     except KeyboardInterrupt:
-        print("\n👋 Application stopped by user")
-    except Exception as e:
-        print(f"\n❌ Error starting application: {e}")
+        print("\nStopped.")
+
 
 if __name__ == "__main__":
     main()
