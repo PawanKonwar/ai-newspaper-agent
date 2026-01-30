@@ -16,6 +16,6 @@ langchain-openai==0.0.2
 langchain-google-genai==0.0.6
 openai>=1.6.1,<2.0.0
 
-# Optional: for tests
+# Tests (required for CI)
 pytest>=7.0.0
 pytest-asyncio>=0.21.0

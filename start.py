@@ -45,6 +45,7 @@ def main() -> None:
 
     try:
         import uvicorn
+
         from app.main import app
     except ImportError as e:
         print(f"Missing dependency: {e}")

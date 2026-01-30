@@ -28,9 +28,12 @@ ai_newspaper_agent/
 ├── tests/
 │   ├── test_app.py
 │   └── test_pipeline.py
+├── .github/workflows/ci.yml # CI: pytest, flake8, isort (Python 3.12)
 ├── .env.example            # Template for environment variables
+├── .flake8                 # flake8 config (max-line-length 88)
 ├── config_template.py     # Documents expected config (no secrets)
 ├── requirements.txt       # Pinned dependencies
+├── requirements-dev.txt   # Dev/CI: flake8, isort
 ├── run.py                 # Entry: python run.py
 ├── start.py               # Entry with env check: python start.py
 ├── README.md
@@ -122,6 +125,31 @@ From the project root:
 ```bash
 pip install pytest pytest-asyncio
 python -m pytest tests/ -v
+```
+
+## CI / GitHub Actions
+
+The repo includes a workflow at `.github/workflows/ci.yml` that runs on **push** and **pull_request** to `main`/`master`:
+
+- **Python 3.12** – installs dependencies and runs tests/lint
+- **pytest** – runs `tests/test_app.py` and `tests/test_pipeline.py` (tests work without API keys; stages may report "error" or "skipped" if keys are missing)
+- **isort** – checks import order (`--check-only --diff --profile black`)
+- **flake8** – lint (max line length 88; uses `.flake8`)
+
+**Secrets (optional):** To run the pipeline against real APIs in CI, add these repository secrets in **Settings → Secrets and variables → Actions**:
+
+- `OPENAI_API_KEY`
+- `DEEPSEEK_API_KEY`
+- `GOOGLE_API_KEY`
+
+If secrets are not set, env vars are empty and tests still pass.
+
+**Local lint:** Install dev deps and run:
+
+```bash
+pip install -r requirements-dev.txt
+isort --check-only --diff --profile black app/ tests/ start.py run.py config_template.py
+flake8 app/ tests/ start.py run.py config_template.py
 ```
 
 ## Environment variables reference

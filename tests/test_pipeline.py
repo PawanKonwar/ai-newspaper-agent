@@ -6,8 +6,15 @@ Path and .env are set in tests/conftest.py.
 
 def test_config_loads():
     """Config reads from environment."""
-    from app.config import OPENAI_API_KEY, DEEPSEEK_API_KEY, GOOGLE_API_KEY
-    from app.config import APP_HOST, APP_PORT, STATIC_DIR, TEMPLATES_DIR
+    from app.config import (
+        APP_HOST,
+        APP_PORT,
+        DEEPSEEK_API_KEY,
+        GOOGLE_API_KEY,
+        OPENAI_API_KEY,
+        STATIC_DIR,
+        TEMPLATES_DIR,
+    )
     assert APP_HOST in ("0.0.0.0", "127.0.0.1") or len(APP_HOST) > 0
     assert isinstance(APP_PORT, int)
     assert STATIC_DIR.exists() or True

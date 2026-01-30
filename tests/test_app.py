@@ -9,8 +9,8 @@ import asyncio
 def test_imports():
     """Verify required packages are installed."""
     import fastapi
-    import uvicorn
     import langchain
+    import uvicorn
     from langchain_google_genai import ChatGoogleGenerativeAI
     assert fastapi
     assert uvicorn
