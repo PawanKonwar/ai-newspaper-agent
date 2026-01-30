@@ -1,20 +1,20 @@
-# AI Newspaper Agent - Pinned dependencies
+# AI Newspaper Agent - Pinned dependencies (Pydantic v2 only)
 # Install: pip install -r requirements.txt
 
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 python-dotenv==1.0.0
-pydantic==2.5.3
-pydantic-settings==2.1.0
+# Pin Pydantic v2 to avoid v1/v2 conflict (ForwardRef recursive_guard)
+pydantic>=2.7.4,<3.0.0
+pydantic-settings>=2.1.0
 python-multipart==0.0.6
 jinja2==3.1.2
 httpx==0.25.2
 
-# LangChain and providers
-langchain==0.1.0
-langchain-community==0.0.10
-langchain-openai==0.0.2
-langchain-google-genai==0.0.6
+# LangChain: versions that depend only on Pydantic v2 (no v1)
+langchain-core>=1.2.5,<2.0.0
+langchain-openai>=0.1.0
+langchain-google-genai>=2.0.0
 openai>=1.6.1,<2.0.0
 
 # Tests (required for CI)

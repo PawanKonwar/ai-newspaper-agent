@@ -8,7 +8,7 @@ import re
 from typing import Any, Dict, List
 
 import httpx
-from langchain.schema import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 
