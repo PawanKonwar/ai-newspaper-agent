@@ -12,7 +12,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 
-from app.config import (
+from .config import (
     DEEPSEEK_API_KEY,
     DEEPSEEK_BASE_URL,
     GEMINI_EDIT_MODEL,
