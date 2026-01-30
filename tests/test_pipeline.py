@@ -1,15 +1,7 @@
 """
 Pipeline and config tests.
+Path and .env are set in tests/conftest.py.
 """
-
-import os
-import sys
-
-import pytest
-from dotenv import load_dotenv
-
-load_dotenv()
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def test_config_loads():

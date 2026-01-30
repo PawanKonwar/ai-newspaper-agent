@@ -4,15 +4,6 @@ Run from project root: python -m pytest tests/ -v
 """
 
 import asyncio
-import os
-import sys
-
-import pytest
-from dotenv import load_dotenv
-
-load_dotenv()
-
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def test_imports():
@@ -37,18 +28,23 @@ def test_env_keys_optional():
     assert hasattr(pipeline, "run_pipeline")
 
 
-@pytest.mark.asyncio
-async def test_pipeline_structure():
-    """Pipeline returns expected keys."""
+def test_pipeline_structure():
+    """Pipeline returns expected keys; stages may be success, error, or skipped (e.g. no API keys)."""
     from app.pipeline import NewspaperPipeline
+
     pipeline = NewspaperPipeline()
-    result = await pipeline.run_pipeline(topic="Test topic", max_length=500)
+    result = asyncio.run(
+        pipeline.run_pipeline(topic="Test topic", max_length=500)
+    )
+
     assert "research_stage" in result
     assert "draft_stage" in result
     assert "final_stage" in result
-    assert result["research_stage"]["status"] in ("success", "error", "skipped")
-    assert result["draft_stage"]["status"] in ("success", "error", "skipped")
-    assert result["final_stage"]["status"] in ("success", "error", "skipped")
+
+    valid_statuses = ("success", "error", "skipped")
+    assert result["research_stage"].get("status") in valid_statuses
+    assert result["draft_stage"].get("status") in valid_statuses
+    assert result["final_stage"].get("status") in valid_statuses
 
 
 def test_fastapi_app():
