@@ -5,8 +5,9 @@ All API keys are read from app.config (loaded from .env).
 import os
 import sys
 
-# Ensure project root on sys.path before app.config import (runs even if app/__init__.py didn't)
-_root = os.path.dirname(os.path.dirname(os.path.abspath(os.path.realpath(__file__))))
+# Path bootstrap so app.config is importable (runs before app/__init__.py if needed).
+_app_dir = os.path.dirname(os.path.abspath(os.path.realpath(__file__)))
+_root = os.path.dirname(_app_dir)
 if _root not in sys.path:
     sys.path.insert(0, _root)
 
