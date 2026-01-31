@@ -39,11 +39,8 @@ jobs:
         run: flake8 app/ tests/ start.py run.py config_template.py
 
       - name: Run pytest
-        working-directory: ${{ github.workspace }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          # Guarantee project root on path before Python starts (app must be importable as package)
-          PYTHONPATH: ${{ github.workspace }}
-        run: PYTHONPATH=${{ github.workspace }} python -m pytest tests/ -v --tb=short
+        run: python -m pytest tests/ -v --tb=short
