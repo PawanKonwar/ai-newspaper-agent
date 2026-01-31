@@ -38,6 +38,33 @@ jobs:
       - name: Run flake8
         run: flake8 app/ tests/ start.py run.py config_template.py
 
+      # -----------------------------
+      # Fail early if required env vars are missing
+      - name: Verify required environment variables
+        run: |
+          echo "Checking required environment variables..."
+          
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "❌ OPENAI_API_KEY is missing"
+            exit 1
+          else
+            echo "✅ OPENAI_API_KEY is set"
+          fi
+
+          if [ -z "$DEEPSEEK_API_KEY" ]; then
+            echo "❌ DEEPSEEK_API_KEY is missing"
+            exit 1
+          else
+            echo "✅ DEEPSEEK_API_KEY is set"
+          fi
+
+          if [ -z "$GOOGLE_API_KEY" ]; then
+            echo "❌ GOOGLE_API_KEY is missing"
+            exit 1
+          else
+            echo "✅ GOOGLE_API_KEY is set"
+          fi
+
       - name: Run pytest
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
