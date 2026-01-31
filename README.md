@@ -1,3 +1,4 @@
+[![CI](https://github.com/PawanKonwar/ai-newspaper-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/PawanKonwar/ai-newspaper-agent/actions/workflows/ci.yml)
 # AI Newspaper Agent
 
 A browser-based application that automates the journalistic process through a three-stage LLM pipeline: **Research (DeepSeek)** → **Draft (OpenAI)** → **Edit (Google Gemini)**.
