@@ -12,18 +12,15 @@ on:
 jobs:
   test-and-lint:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: "pip"
+  .env
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+    GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+  strategy:
+    fail-fast: false
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
