@@ -1,5 +1,7 @@
 # AI Newspaper Agent 📰
 
+[![CI](https://github.com/PawanKonwar/ai-newspaper-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/PawanKonwar/ai-newspaper-agent/actions/workflows/ci.yml)
+
 **Automates article generation through a three-stage LLM pipeline: Research → Draft → Edit.**  
 Uses **multiple LLM providers**—**DeepSeek**, **OpenAI**, and **Google Gemini**—in a single workflow for research, writing, and polishing.
 
